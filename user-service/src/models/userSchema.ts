@@ -33,7 +33,6 @@ const userSchema: Schema<IUser> = new Schema({
     playlist: [
         {
             type: String,
-            required: true
         }
     ]
 }, {

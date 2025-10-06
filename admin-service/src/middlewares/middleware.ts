@@ -16,7 +16,7 @@ export const isAuth = async (req: AuthenticatedRequest, res: Response, next: Nex
             return
         }
 
-        const user = await axios.get(`${process.env.USER_SERVICE_URI}api/v1/user/profile`, {
+        const user = await axios.get(`${process.env.USER_SERVICE_URI}/api/v1/user/profile`, {
             headers: {
                 token
             }
