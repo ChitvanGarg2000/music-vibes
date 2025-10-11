@@ -6,6 +6,9 @@ const userSchema: Schema<IUser> = new Schema({
         type:String,
         required: true
     },
+    profile: {
+        type: String,
+    },
     email: {
         type: String,
         required: true,

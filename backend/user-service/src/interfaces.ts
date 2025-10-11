@@ -7,7 +7,8 @@ export interface IUser extends Document{
     phone: number,
     password: string,
     role: string,
-    playlists: ObjectId[]
+    playlists: ObjectId[],
+    profile?: string
 }
 
 export interface RequestAuth extends Request{

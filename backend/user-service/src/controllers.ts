@@ -7,7 +7,7 @@ import jwt from 'jsonwebtoken'
 import type { RequestAuth } from "./interfaces.js";
 
 export const registerUser = TryCatch(async (req: Request, res: Response) => {
-    const {name, password, email, role, phone, playlist} = req.body
+    const {name, password, email, role, phone, playlist, profile} = req.body
 
     if(!name || !password || !email || !role || !phone || !playlist) return;
 
@@ -23,7 +23,7 @@ export const registerUser = TryCatch(async (req: Request, res: Response) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     user = await userModel.create({
-        name, password: hashedPassword, email, role, phone, playlist
+        name, password: hashedPassword, email, role, phone, playlist, profile: profile || ''
     })
 
     const token = jwt.sign({id: user._id}, process.env.JWT_SECRET as string, {
