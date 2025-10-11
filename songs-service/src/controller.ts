@@ -103,3 +103,26 @@ export const getSongsByAlbumId = TryCatch(async (req: Request, res: Response) =>
         message: 'Songs retrieved successfully'
     });
 });
+
+export const getPlaylistSongs = TryCatch(async (req: Request, res: Response) => {
+    const { songs_id } = req.body;  
+    if(!songs_id || songs_id.length === 0){
+        return res.status(400).json({
+            message: 'Songs id are required',
+            success: false
+        })
+    }
+
+    const songs = await sql`SELECT * FROM songs WHERE id IN (${sql(songs_id)})`;
+    if(songs.length === 0){
+        return res.status(404).json({
+            message: 'No songs found for this playlist',
+            success: false
+        });
+    }
+    return res.status(200).json({
+        data: songs,
+        message: 'Songs retrieved successfully',
+        success: true
+    });
+});

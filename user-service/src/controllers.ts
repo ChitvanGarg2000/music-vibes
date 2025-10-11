@@ -1,6 +1,7 @@
 import TryCatch from "./helpers/TryCatch.js";
 import type { Request, Response } from "express";
 import userModel from "./models/userSchema.js";
+import UserPlaylistModel from "./models/userPlaylists.js";
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import type { RequestAuth } from "./interfaces.js";
@@ -80,3 +81,61 @@ export const myProfile = TryCatch((req: RequestAuth, res: Response) => {
     const user = req?.user
     res.json(user)
 })
+
+export const createPlaylist = TryCatch(async (req: RequestAuth, res: Response) => {
+    const user = req?.user
+    const {playlist} = req.body
+
+    if(!playlist) return res.status(400).json({
+        message: "playlist is required",
+        success: false
+    });
+
+    const newPlaylist = await UserPlaylistModel.create(playlist);
+    const updatedUser = await userModel.findByIdAndUpdate(user?._id, {
+        $push: {playlists: newPlaylist._id}
+    });
+    res.status(200).json({
+        message: "playlist added successfully",
+        data: updatedUser,
+        success: true
+    })
+});
+
+export const deletePlaylist = TryCatch(async (req: RequestAuth, res: Response) => {
+    const user = req?.user
+    const {playlist_id} = req.body 
+    if(!playlist_id) return res.status(400).json({
+        message: "playlist id is required",
+        success: false
+    });
+
+    const playlist = await UserPlaylistModel.findById(playlist_id);
+
+    if(!playlist) return res.status(404).json({
+        message: "playlist not found",
+        success: false
+    });
+
+    await UserPlaylistModel.findByIdAndDelete(playlist_id);
+    const updatedUser = await userModel.findByIdAndUpdate(user?._id, {
+        $pull: {playlists: playlist_id}
+    });
+
+    res.status(200).json({
+        message: "playlist deleted successfully",
+        data: updatedUser,
+        success: true
+    });
+});
+
+export const getPlaylists = TryCatch(async (req: RequestAuth, res: Response) => {
+    const user = req?.user
+    const populatedPlaylists = await userModel.find({user: user?._id}, 'playlists').populate('playlists');
+
+    res.status(200).json({
+        message: "playlists fetched successfully",
+        data: populatedPlaylists,
+        success: true
+    });
+});

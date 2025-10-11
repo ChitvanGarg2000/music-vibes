@@ -1,4 +1,5 @@
 import { Document } from "mongoose"
+import type { ObjectId } from "mongoose"
 import type { Request } from "express"
 export interface IUser extends Document{
     name: string,
@@ -6,9 +7,14 @@ export interface IUser extends Document{
     phone: number,
     password: string,
     role: string,
-    playlist: string[]
+    playlists: ObjectId[]
 }
 
 export interface RequestAuth extends Request{
     user?: IUser | null
+}
+
+export interface IPlaylist extends Document {
+    name: string,
+    songs: string[]
 }

@@ -30,9 +30,10 @@ const userSchema: Schema<IUser> = new Schema({
         type: String,
         required: true
     },
-    playlist: [
+    playlists: [
         {
-            type: String,
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'playlist'
         }
     ]
 }, {
